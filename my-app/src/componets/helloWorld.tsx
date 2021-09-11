@@ -1,2 +1,2 @@
-const HelloWorld = () => <h1>Plan My Trip</h1>
+const HelloWorld = () => <h1>Plan My Trip, Take 3</h1>
 export default HelloWorld
