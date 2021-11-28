@@ -15,4 +15,4 @@ spec:
     spec:
       containers:
         - name: plan-my-trip
-          image: replacedbykustomize
+          image: pmt_image
