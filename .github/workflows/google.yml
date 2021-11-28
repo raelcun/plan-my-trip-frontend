@@ -34,7 +34,7 @@ jobs:
 
     steps:
     - name: env calculations
-      run: echo FULL_DOCKER_IMAGE=$DOCKER_REGISTRY_LOCATION/$PROJECT_ID/$DOCKER_REPOSITORY_NAME/$IMAGE:$GITHUB_SHA
+      run: echo FULL_DOCKER_IMAGE=$DOCKER_REGISTRY_LOCATION/$PROJECT_ID/$DOCKER_REPOSITORY_NAME/$IMAGE:$GITHUB_SHA >> $GITHUB_ENV
 
     - name: Checkout
       uses: actions/checkout@v2
@@ -71,16 +71,16 @@ jobs:
       run: |-
         docker push "$FULL_DOCKER_IMAGE"
 
-    # # Set up kustomize
-    # - name: Set up Kustomize
-    #   run: |-
-    #     curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
-    #     chmod u+x ./kustomize
+    # Set up kustomize
+    - name: Set up Kustomize
+      run: |-
+        curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+        chmod u+x ./kustomize
 
-    # # Deploy the Docker image to the GKE cluster
-    # - name: Deploy
-    #   run: |-
-    #     ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
-    #     ./kustomize build . | kubectl apply -f -
-    #     kubectl rollout status deployment/$DEPLOYMENT_NAME
-    #     kubectl get services -o wide
+    # Deploy the Docker image to the GKE cluster
+    - name: Deploy
+      run: |-
+        ./kustomize edit set image $FULL_DOCKER_IMAGE
+        ./kustomize build . | kubectl apply -f -
+        kubectl rollout status deployment/$DEPLOYMENT_NAME
+        kubectl get services -o wide
