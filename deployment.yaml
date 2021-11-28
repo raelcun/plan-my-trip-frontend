@@ -1,18 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: plan-my-trip-deployment
+  name: frontend-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: plan-my-trip
+      app: frontend
   template:
     metadata:
       labels:
-        app: plan-my-trip
+        app: frontend
         version: 0.0.1
     spec:
       containers:
-        - name: plan-my-trip
+        - name: frontend
           image: pmt_image
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  type: NodePort
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 3000
