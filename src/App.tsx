@@ -1,6 +1,5 @@
 import './App.css';
-import HelloWorld from './componets/helloWorld';
-
+import { HelloWorld } from './components/helloWorld';
 
 const App = () => {
   return (
