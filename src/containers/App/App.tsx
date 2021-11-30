@@ -17,6 +17,8 @@ export const App = () => {
     <div className="App">
       <HelloWorld />
       <h3>API Result: {message}</h3>
+      <h5>Deployed SHA: {process.env.REACT_APP_GITHUB_SHA}</h5>
+      <h5>Deployed REF: {process.env.REACT_APP_GITHUB_REF}</h5>
     </div>
   )
 }
