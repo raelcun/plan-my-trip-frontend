@@ -1,7 +1,7 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { App } from './App';
-import { happyPath, registerJestServer } from '../../mocks';
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+import { App } from './App'
+import { happyPath, registerJestServer } from '../../mocks'
 
 describe('App', () => {
   const server = registerJestServer()
@@ -11,8 +11,8 @@ describe('App', () => {
 
     server.use(...happyPath)
 
-    render(<App />);
-    const linkElement = await screen.findByText(/test response/i);
-    expect(linkElement).toBeInTheDocument();
+    render(<App />)
+    const linkElement = await screen.findByText(/test response/i)
+    expect(linkElement).toBeInTheDocument()
   })
 })
