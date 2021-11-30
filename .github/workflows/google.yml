@@ -26,61 +26,77 @@ env:
   DEPLOYMENT_NAME: frontend-deployment
   IMAGE: plan-my-trip-frontend
 
+concurrency:
+  group: environment-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install
+      - run: npm run lint
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install
+      - run: npm test
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
     environment: production
-
+    needs: [lint, test]
     steps:
-    - name: env calculations
-      run: echo FULL_DOCKER_IMAGE=$DOCKER_REGISTRY_LOCATION/$PROJECT_ID/$DOCKER_REPOSITORY_NAME/$IMAGE:$GITHUB_SHA >> $GITHUB_ENV
+      - name: env calculations
+        run: echo FULL_DOCKER_IMAGE=$DOCKER_REGISTRY_LOCATION/$PROJECT_ID/$DOCKER_REPOSITORY_NAME/$IMAGE:$GITHUB_SHA >> $GITHUB_ENV
 
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    # Setup gcloud CLI
-    - uses: google-github-actions/setup-gcloud@v0.2.0
-      with:
-        service_account_key: ${{ secrets.GKE_SA_KEY }}
-        project_id: ${{ secrets.GKE_PROJECT }}
+      # Setup gcloud CLI
+      - uses: google-github-actions/setup-gcloud@v0.2.0
+        with:
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          project_id: ${{ secrets.GKE_PROJECT }}
 
-    # Configure Docker to use the gcloud command-line tool as a credential
-    # helper for authentication
-    - run: |-
-        gcloud --quiet auth configure-docker us-central1-docker.pkg.dev
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - run: |-
+          gcloud --quiet auth configure-docker us-central1-docker.pkg.dev
 
-    # Get the GKE credentials so we can deploy to the cluster
-    - uses: google-github-actions/get-gke-credentials@v0.2.1
-      with:
-        cluster_name: ${{ env.GKE_CLUSTER }}
-        location: ${{ env.GKE_ZONE }}
-        credentials: ${{ secrets.GKE_SA_KEY }}
+      # Get the GKE credentials so we can deploy to the cluster
+      - uses: google-github-actions/get-gke-credentials@v0.2.1
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}
+          credentials: ${{ secrets.GKE_SA_KEY }}
 
-    # Build the Docker image
-    - name: Build
-      run: |-
-        DOCKER_BUILDKIT=1 docker build \
-          --tag "$FULL_DOCKER_IMAGE" \
-          --build-arg GITHUB_SHA="$GITHUB_SHA" \
-          --build-arg GITHUB_REF="$GITHUB_REF" \
-          .
+      # Build the Docker image
+      - name: Build
+        run: |-
+          DOCKER_BUILDKIT=1 docker build \
+            --tag "$FULL_DOCKER_IMAGE" \
+            --build-arg GITHUB_SHA="$GITHUB_SHA" \
+            --build-arg GITHUB_REF="$GITHUB_REF" \
+            .
 
-    # Push the Docker image to Google Container Registry
-    - name: Publish
-      run: |-
-        docker push "$FULL_DOCKER_IMAGE"
+      # Push the Docker image to Google Container Registry
+      - name: Publish
+        run: |-
+          docker push "$FULL_DOCKER_IMAGE"
 
-    # Set up kustomize
-    - name: Set up Kustomize
-      run: |-
-        curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
-        chmod u+x ./kustomize
+      # Set up kustomize
+      - name: Set up Kustomize
+        run: |-
+          curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+          chmod u+x ./kustomize
 
-    # Deploy the Docker image to the GKE cluster
-    - name: Deploy
-      run: |-
-        ./kustomize edit set image pmt_image=$FULL_DOCKER_IMAGE
-        ./kustomize build . | kubectl apply -f -
-        kubectl rollout status deployment.apps/$DEPLOYMENT_NAME
-        kubectl get services -o wide
+      # Deploy the Docker image to the GKE cluster
+      - name: Deploy
+        run: |-
+          ./kustomize edit set image pmt_image=$FULL_DOCKER_IMAGE
+          ./kustomize build . | kubectl apply -f -
+          kubectl rollout status deployment.apps/$DEPLOYMENT_NAME
+          kubectl get services -o wide
