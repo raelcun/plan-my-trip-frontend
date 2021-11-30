@@ -7,13 +7,13 @@ COPY package.json ./
 COPY package-lock.json ./
 RUN npm ci --no-audit
 COPY . ./
-RUN npm run build
-
-FROM base
 ARG GITHUB_SHA
 ARG GITHUB_REF
 ENV REACT_APP_GITHUB_SHA=$GITHUB_SHA
 ENV REACT_APP_GITHUB_REF=$GITHUB_REF
+RUN npm run build
+
+FROM base
 COPY --from=build /app/build ./
 
 EXPOSE 3000
