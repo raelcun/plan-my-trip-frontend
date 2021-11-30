@@ -39,7 +39,18 @@
       "react-app",
       "react-app/jest",
       "plugin:prettier/recommended"
-    ]
+    ],
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "semi": false,
+          "printWidth": 120,
+          "singleQuote": true,
+          "trailingComma": "all"
+        }
+      ]
+    }
   },
   "browserslist": {
     "production": [
