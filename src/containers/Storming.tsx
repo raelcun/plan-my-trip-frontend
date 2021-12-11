@@ -5,7 +5,7 @@ export const Storming = () => {
   return (
     <>
       <Typography paragraph sx={{ height: '200vh' }}>
-        You're on the storming page 2
+        You're on the storming page
       </Typography>
       <FAB
         onFlightsClicked={() => console.log('add flight clicked')}
