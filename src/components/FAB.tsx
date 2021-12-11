@@ -1,4 +1,4 @@
-import { SpeedDial, SpeedDialAction, SpeedDialIcon, Icon } from '@mui/material'
+import { Icon, SpeedDial, SpeedDialAction, SpeedDialIcon } from '@mui/material'
 import { useState } from 'react'
 
 type GenericFabProps = {

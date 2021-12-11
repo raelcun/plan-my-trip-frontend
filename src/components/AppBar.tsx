@@ -1,4 +1,4 @@
-import { AppBar as MAppBar, Icon, Button, Toolbar, Typography, ButtonGroup } from '@mui/material'
+import { AppBar as MAppBar, Button, Icon, Toolbar, Typography } from '@mui/material'
 
 export type AppBarProps = {
   onShareClicked?: () => void

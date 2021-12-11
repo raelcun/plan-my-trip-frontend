@@ -1,8 +1,9 @@
+import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/styles'
+import { App } from 'containers'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { App } from 'containers'
+import { BrowserRouter } from 'react-router-dom'
 import { maybeRegisterHappyPathMocks } from './mocks'
-import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/styles'
 
 const theme = createTheme({
   components: {
@@ -19,7 +20,9 @@ maybeRegisterHappyPathMocks().then(() =>
     <React.StrictMode>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
-          <App />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
         </ThemeProvider>
       </StyledEngineProvider>
     </React.StrictMode>,

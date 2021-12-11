@@ -1,13 +1,14 @@
 import {
   Box,
+  Collapse,
+  Divider,
   Drawer as MDrawer,
+  Icon,
   List,
+  ListItemButton,
+  ListItemIcon,
   ListItemText,
   Toolbar,
-  Icon,
-  ListItemButton,
-  Collapse,
-  ListItemIcon,
 } from '@mui/material'
 import { useState } from 'react'
 
@@ -16,9 +17,10 @@ const DrawerItemButton: React.FC<{
   leadingIcon?: string
   trailingIcon?: string
   level?: number
+  selected?: boolean
   onClick?: () => void
-}> = ({ text, leadingIcon, trailingIcon, level, onClick }) => (
-  <ListItemButton onClick={onClick} sx={{ pl: 3 * (level || 1) - 1 }}>
+}> = ({ text, selected, leadingIcon, trailingIcon, level, onClick }) => (
+  <ListItemButton selected={selected} onClick={onClick} sx={{ pl: 3 * (level || 1) - 1 }}>
     <ListItemIcon>{leadingIcon && <Icon>{leadingIcon}</Icon>}</ListItemIcon>
     <ListItemText primary={text} />
     {trailingIcon && <Icon>{trailingIcon}</Icon>}
@@ -50,9 +52,12 @@ const DrawerGroup: React.FC<{ name: string; icon?: string; isOpen?: boolean; lev
   )
 }
 
-export type DrawerItem = 'lodging' | 'flights' | 'activities' | 'todo' | 'packing' | 'cost' | `segment_${string}`
+export type DrawerItem = 'storming' | 'todo' | 'packing' | 'cost' | 'itinerary'
 
-export const Drawer: React.FC<{ onItemClicked?: (item: DrawerItem) => void }> = ({ onItemClicked }) => {
+export const Drawer: React.FC<{ selectedItem?: DrawerItem; onItemClicked?: (item: DrawerItem) => void }> = ({
+  onItemClicked,
+  selectedItem,
+}) => {
   const handleClick = (item: DrawerItem) => onItemClicked && onItemClicked(item)
 
   return (
@@ -71,24 +76,42 @@ export const Drawer: React.FC<{ onItemClicked?: (item: DrawerItem) => void }> = 
     >
       <Toolbar />
       <Box sx={{ overflow: 'auto' }}>
-        <DrawerGroup name="Storming" icon="psychology" level={1}>
-          <DrawerItemButton text="Lodging" leadingIcon="bed" level={2} onClick={() => handleClick('lodging')} />
-          <DrawerItemButton text="Flights" leadingIcon="flight" level={2} onClick={() => handleClick('flights')} />
-          <DrawerItemButton
-            text="Activities"
-            leadingIcon="local_activity"
-            level={2}
-            onClick={() => handleClick('activities')}
-          />
+        <DrawerItemButton
+          selected={selectedItem === 'storming'}
+          text="Storming"
+          leadingIcon="psychology"
+          onClick={() => handleClick('storming')}
+        />
+        <DrawerItemButton
+          selected={selectedItem === 'todo'}
+          text="Todo"
+          leadingIcon="task_alt"
+          onClick={() => handleClick('todo')}
+        />
+        <DrawerItemButton
+          selected={selectedItem === 'packing'}
+          text="Packing"
+          leadingIcon="work"
+          onClick={() => handleClick('packing')}
+        />
+        <DrawerItemButton
+          selected={selectedItem === 'itinerary'}
+          text="Itinerary"
+          leadingIcon="event"
+          onClick={() => handleClick('itinerary')}
+        />
+        <DrawerItemButton
+          selected={selectedItem === 'cost'}
+          text="Cost"
+          leadingIcon="paid"
+          onClick={() => handleClick('cost')}
+        />
+        <Divider />
+        <DrawerGroup name="Test Storming" icon="psychology" level={1}>
+          <DrawerItemButton text="Lodging" leadingIcon="bed" level={2} />
+          <DrawerItemButton text="Flights" leadingIcon="flight" level={2} />
+          <DrawerItemButton text="Activities" leadingIcon="local_activity" level={2} />
         </DrawerGroup>
-        <DrawerItemButton text="Todo" leadingIcon="task_alt" onClick={() => handleClick('todo')} />
-        <DrawerItemButton text="Packing" leadingIcon="work" onClick={() => handleClick('packing')} />
-        <DrawerGroup name="Itinerary" icon="event" level={1}>
-          {[1, 2, 3, 4, 5].map((i) => (
-            <DrawerItemButton key={i} text={`Mar ${i}`} onClick={() => handleClick(`segment_mar_${i}`)} />
-          ))}
-        </DrawerGroup>
-        <DrawerItemButton text="Cost" leadingIcon="paid" onClick={() => handleClick('cost')} />
       </Box>
     </MDrawer>
   )
