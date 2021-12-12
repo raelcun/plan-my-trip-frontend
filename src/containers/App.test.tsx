@@ -12,7 +12,7 @@ describe('App', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.getByText(/You're on the storming page/i)).toBeInTheDocument()
+    expect(screen.getByText(/Lodging/i)).toBeInTheDocument()
 
     const drawer = screen.getByTestId('drawer')
     fireEvent.click(within(drawer).getByText(/Todo/i))
