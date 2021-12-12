@@ -56,6 +56,47 @@ const RentalCarSection: React.FC<{
   </Paper>
 )
 
+const LodgingSection: React.FC<{
+  details: {
+    name: string
+    location?: string
+    checkinTime?: number
+    checkoutTime?: number
+    confirmationNumber?: string
+    notes?: string
+  }
+}> = ({ details }) => (
+  <Paper variant="outlined" sx={{ p: 2, mb: 2, backgroundColor: '#EDF4FC', '& > .MuiTextField-root': { m: 1 } }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+      <Typography gutterBottom={false} variant="h6" sx={{ mr: 1 }}>
+        {details.name}
+      </Typography>
+      <IconButton size="small">
+        <Icon>delete</Icon>
+      </IconButton>
+    </Box>
+    <TextField label="Location" defaultValue={details.location} />
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <DateTimePicker
+        renderInput={(props) => <TextField {...props} />}
+        label="Checkin Time"
+        value={details.checkinTime}
+        onChange={() => {}}
+      />
+    </LocalizationProvider>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <DateTimePicker
+        renderInput={(props) => <TextField {...props} />}
+        label="Checkout Time"
+        value={details.checkoutTime}
+        onChange={() => {}}
+      />
+    </LocalizationProvider>
+    <TextField label="Confirmation Number" defaultValue={details.confirmationNumber} />
+    <TextField label="Notes" multiline />
+  </Paper>
+)
+
 const Section: React.FC<{ heading: string }> = ({ heading, children }) => (
   <Accordion defaultExpanded>
     <AccordionSummary expandIcon={<Icon>expand_more</Icon>}>
@@ -84,6 +125,15 @@ export const Storming = () => {
       confirmationNumber: 'abc123',
     },
   ]
+  const lodgingDetails = [
+    {
+      name: 'Four Seasons',
+      location: '663 William Hilton Pkwy, Hilton Head Island, SC 29928',
+      checkinTime: new Date().getTime(),
+      checkoutTime: new Date().getTime(),
+      confirmationNumber: 'abc123',
+    },
+  ]
 
   return (
     <>
@@ -93,7 +143,10 @@ export const Storming = () => {
         src="https://live-sonesta-8.pantheonsite.io/sites/default/files/field_featured_images/pano_xl/HHI-SH-ppc1.jpg"
       />
       <Section heading="Lodging">
-        <Typography paragraph>TODO</Typography>
+        {lodgingDetails.map((details) => (
+          <LodgingSection details={details} />
+        ))}
+        <Button startIcon={<Icon>add</Icon>}>Add Lodging</Button>
       </Section>
       <Section heading="Rental Cars">
         {rentalCarDetails.map((details) => (
