@@ -1,5 +1,6 @@
 import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/styles'
 import { App } from 'containers'
+import 'normalize.css'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'

@@ -51,8 +51,8 @@ jobs:
       #     cache: 'npm'
       - run: npm install
       - run: npm test
-  setup-build-publish-deploy:
-    name: Setup, Build, Publish, and Deploy
+  build-publish-deploy:
+    name: Build, Publish, and Deploy
     runs-on: ubuntu-latest
     environment: production
     needs: [lint, test]

@@ -29,7 +29,10 @@ export const App = () => {
       <Box sx={{ display: 'flex' }}>
         <AppBar onShareClicked={() => console.log('share clicked')} />
         <Drawer selectedItem={mapPathToDrawerItem(location.pathname)} onItemClicked={(item) => navigate(item)} />
-        <Box component="div" sx={{ flexGrow: 1, p: 3 }}>
+        <Box
+          component="div"
+          sx={{ flexGrow: 1, p: 3, boxSizing: 'border-box', minHeight: '100vh', backgroundColor: '#EDF4FC' }}
+        >
           <Toolbar />
           <Routes>
             <Route path="/" element={<Storming />} />
